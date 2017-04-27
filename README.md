@@ -15,6 +15,9 @@ You will need ruby and postgres with postgis installed locally. For ruby I recom
 
 Clone, `bundle`, `rake db:setup`, `rails server` should get you going.
 
+Alternativley you can use docker, see instructions at the end.
+
+
 Concept outline
 ---------------
 
@@ -38,3 +41,20 @@ Testing
 I'm currently working on this quite quickly, and more tests could definitely be written.
 
 For now, I am focussing on rspec feature tests, which can be found in spec/features and run by running `rake`
+
+Docker
+------
+
+To run the site locally using Docker, you'll need to install both [docker](https://docs.docker.com/engine/installation/) and [docker compose](https://docs.docker.com/compose/install/)
+
+Start by editing the database config file at config/database.yml and set both the development and test environments have the following values set:
+
+    host: db
+    username: postgres
+    password:
+
+From the git checkout directory run `docker-compose up` to create the containers and to start them.
+Once they are running you'll need to run `docker-compose run web rake db:setup` to setup the database.
+Now goto http://localhost:3000 to see the site runing, create the first account through the web interface.
+You can seed the site with fake data using `docker-compose run web rake import_fake`
+To make the first user an admin, run `docker-compose run web rails console`, then enter the following into the console. `u = User.first; u.role = 'admin'; u.save!`
